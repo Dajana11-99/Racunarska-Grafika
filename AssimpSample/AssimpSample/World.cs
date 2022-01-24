@@ -35,6 +35,8 @@ namespace AssimpSample
         /// </summary>
         private float m_xRotation = 0.0f;
         private float transliranjeLevogBolida = 0.0f;
+
+ 
         /// <summary>
         ///	 Ugao rotacije sveta oko Y ose.
         /// </summary>
@@ -223,7 +225,6 @@ namespace AssimpSample
             this.gl = gl;
             this.m_scene_firstCar = new AssimpScene("3D Models\\Bolid1", "Bolid1.3ds", gl);
             this.m_scene_secondCar = new AssimpScene("3D Models\\Car2", "Car tasergal xform N200214.3DS", gl);
-            // this.m_scene_secondCar = new AssimpScene("3D Models\\castle2", "castle.obj", gl);
 
             this.m_width = width;
             this.m_height = height;
@@ -251,7 +252,7 @@ namespace AssimpSample
         {
             gl.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             gl.Color(1f, 0f, 0f);
-            gl.ShadeModel(OpenGL.GL_FLAT);
+            gl.ShadeModel(OpenGL.GLU_FLAT);
             gl.Enable(OpenGL.GL_DEPTH_TEST);
             gl.Enable(OpenGL.GL_CULL_FACE);
 
@@ -259,26 +260,25 @@ namespace AssimpSample
             gl.ColorMaterial(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT_AND_DIFFUSE);
             gl.Enable(OpenGL.GL_NORMALIZE);
 
-            TopLighting();
+             TopLighting();
+          
             DefineTimers();
-            Tekstura(gl);
-
-
+            Texture(gl);
+            
             m_scene_secondCar.LoadScene();
             m_scene_secondCar.Initialize();
 
             m_scene_firstCar.LoadScene();
             m_scene_firstCar.Initialize();
         }
-
+    
         /// <summary>
         ///  Iscrtavanje OpenGL kontrole.
         /// </summary>
 
 
-
-
-        public void Tekstura(OpenGL gl)
+      
+        public void Texture(OpenGL gl)
         {
             gl.Enable(OpenGL.GL_TEXTURE_2D); // omogucavanje upotrebe tekstura
             gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE); //način stapanja teksture sa materijalom 
@@ -306,39 +306,37 @@ namespace AssimpSample
                 image.Dispose();
             }
         }
-        private void TopLighting()
-        {
+         private void TopLighting()
+         {
+
+         
+             gl.Enable(OpenGL.GL_LIGHTING);         
+             float[] ambientColor1 = { 0.4f, 0.4f, 0.4f, 1.0f };
+             float[] diffuseColor = { 1.0f, 1.0f, 1.0f, 1.0f };  
+             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, ambientColor1);
+             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, diffuseColor);
+             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPOT_CUTOFF, 180.0f);
+             gl.Enable(OpenGL.GL_LIGHT0);
+             float[] lightPosition1 = { 0.0f, 2.0f, 0.0f, 1.0f };
+             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, lightPosition1);
 
 
-            gl.Enable(OpenGL.GL_LIGHTING);         // ukljucujemo osvetljenje
-            gl.Enable(OpenGL.GL_LIGHT0);           // svetlo0 koje se koristi za tackasti izvor
-
-
-
-            float[] ambientColor1 = { 0.4f, 0.4f, 0.4f, 1.0f };
-            float[] diffuseColor = { 1.0f, 1.0f, 1.0f, 1.0f };  // bela boja
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, ambientColor1);
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, diffuseColor);
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPOT_CUTOFF, 180.0f); // tackasti izvor
-            //gore u centar scene 
-            float[] lightPosition1 = { 0.0f, 2.0f, 0.0f, 1.0f };
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, lightPosition1);
-
-
+             float[] yellowColor = { 1.0f, 1.0f, 0.0f, 1.0f };
+             float[] ambientColor2 = { 0.3f, 0.3f, 0.3f, 1.0f };
+             float[] lightPosition2 = { 570.0f, 10f,-12300.0f, 1.0f };
+             float[] light_direction = { 0.0f, -1.0f, 0.0f};
+             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, ambientColor2);
+             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, yellowColor);
+             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_DIRECTION, light_direction);
+             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 45.0f); 
+         
 
             gl.Enable(OpenGL.GL_LIGHT1);// svetlo1 koje se koristi kao reflektor zute boje
-            float[] whiteColor = { 1.0f, 1.0f, 0.0f, 1.0f };
-            float[] ambientColor2 = { 0.4f, 0.4f, 0.4f, 1.0f };
-            float[] lightPosition2 = { -730f, -2000f, -3300f };
-            float[] light_direction = { 0.0f, -1.0f, 0.0f, 1.0f };
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, ambientColor2);
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, whiteColor);
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, lightPosition2);
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_DIRECTION, light_direction);
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 45.0f); // cut-off=45
 
 
         }
+
         public void Draw(OpenGL gl)
         {
 
@@ -347,21 +345,26 @@ namespace AssimpSample
             gl.PushMatrix();
             gl.Translate(0.0f, 0.0f, -m_sceneDistance);
             gl.LookAt(eyeX, eyeY, eyeZ, 0.0f, 0.0f, centerZ, 0.0f, 1.0f, 0.0f);
-            gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
-            gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
+             gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
+             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
 
-            DrawFoundation();
-            DrawFormula1();
-            DrawFormula2();
-            DrawRoadLeft();
-            DrawRoadRight();
-            DrawWhiteLine();
-            DrawRW();
-            DrawLW();
-            DrawText();
+          
+             DrawFoundation();
+             DrawFormula1();
+             DrawFormula2();
+             
+             DrawRoadLeft();
+             DrawRoadRight();
+             DrawWhiteLine();
+             DrawRW();
+             DrawLW();
+             DrawText();
+           
             gl.PopMatrix();
-
+           
             gl.Flush();
+
+
         }
 
         public void ActivateAnimation()
@@ -505,7 +508,6 @@ namespace AssimpSample
             gl.Translate(transliranjeLevogBolida,1.1f, 0.0f);
             m_scene_firstCar.Draw();
             gl.PopMatrix();
-            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_DECAL);
            gl.Disable(OpenGL.GL_TEXTURE_2D);
         }
         private void DrawFormula2()
@@ -555,7 +557,7 @@ namespace AssimpSample
         private void DrawWhiteLine()
         {
             gl.PushMatrix();
-            gl.Translate(0f, 703f, 6500f);
+            gl.Translate(0f, 707f, 6500f);
             gl.Scale(0.5f, 20.0f, 15.0f);
             gl.Color(0.9,0.9, 0.9);
             gl.Begin(OpenGL.GL_QUADS);
@@ -572,7 +574,7 @@ namespace AssimpSample
             gl.Enable(OpenGL.GL_TEXTURE_2D);
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)Textures.Asfalt]); //tekstura asfalta
             gl.PushMatrix();
-            gl.Translate(-600f, 702f, 6500f);
+            gl.Translate(-600f, 705f, 6500f);
             gl.Scale(9.0f, 20.0f, 15.0f);
             gl.Color(0.8f, 0.9f, 0.8f, 1.0f);
             gl.Begin(OpenGL.GL_QUADS);
@@ -594,7 +596,7 @@ namespace AssimpSample
             gl.Enable(OpenGL.GL_TEXTURE_2D);
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)Textures.Asfalt]); //tekstura asfalta
             gl.PushMatrix();
-            gl.Translate(600f, 702f, 6500f);
+            gl.Translate(600f, 705f, 6500f);
             gl.Scale(9.0f, 20.0f, 15.0f);
             gl.Color(0.8f, 0.9f, 0.8f, 1.0f);
             gl.Begin(OpenGL.GL_QUADS);

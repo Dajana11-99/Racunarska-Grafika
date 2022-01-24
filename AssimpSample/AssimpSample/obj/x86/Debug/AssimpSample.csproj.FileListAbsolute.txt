@@ -162,4 +162,3 @@ D:\4 godina\RG-ProjektniZadatak\AssimpSample\AssimpSample\obj\x86\Debug\AssimpSa
 D:\4 godina\RG-ProjektniZadatak\AssimpSample\AssimpSample\bin\Debug\3D Models\Car2\Car tasergal xform N200214.3DS
 D:\4 godina\RG-ProjektniZadatak\AssimpSample\AssimpSample\bin\Debug\3D Models\Car2\tasergal xform.3DS
 D:\4 godina\RG-ProjektniZadatak\AssimpSample\AssimpSample\bin\Debug\3D Models\Bolid1\Bolid1.3ds
-D:\4 godina\RG-ProjektniZadatak\AssimpSample\AssimpSample\bin\Debug\3D Models\Car2\darkcastle.blend

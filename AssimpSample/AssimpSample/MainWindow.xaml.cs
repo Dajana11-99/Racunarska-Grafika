@@ -111,6 +111,7 @@ namespace AssimpSample
                     if (!m_world.AnimationActive)
                         m_world.RotationY += 5.0f; break;
 
+
                 case Key.V:
                     {
                         m_world.RefreshScene();
